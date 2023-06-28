@@ -24,7 +24,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.codelab.sample"
+        applicationId "dev.dai.subscriptionscodelab"
         minSdk 23
         targetSdk 31
         versionCode 2

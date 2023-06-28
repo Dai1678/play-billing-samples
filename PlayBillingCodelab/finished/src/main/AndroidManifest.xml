@@ -16,7 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sample.subscriptionscodelab">
+    package="dev.dai.subscriptionscodelab">
 
     <application
         android:allowBackup="true"
@@ -26,7 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BasicsCodelab">
         <activity
-            android:name="com.sample.subscriptionscodelab.MainActivity"
+            android:name="dev.dai.subscriptionscodelab.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.BasicsCodelab.NoActionBar">
             <intent-filter>
