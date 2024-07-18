@@ -6,4 +6,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Play Billing Codelab"
-include ':start', ':finished'
+include ':finished'
