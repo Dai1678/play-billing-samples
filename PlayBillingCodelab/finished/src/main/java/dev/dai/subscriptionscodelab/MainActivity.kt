@@ -255,6 +255,8 @@ private fun MainNavHost(viewModel: MainViewModel, activity: MainActivity) {
                     viewModel = viewModel
                 )
             }
+
+            else -> Unit
         }
     }
 }

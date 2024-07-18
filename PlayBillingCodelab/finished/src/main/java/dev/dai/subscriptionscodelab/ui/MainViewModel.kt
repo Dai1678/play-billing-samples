@@ -24,6 +24,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingFlowParams.SubscriptionUpdateParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import dev.dai.subscriptionscodelab.billing.BillingClientWrapper
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
  */
 class MainViewModel(application: Application) :
     AndroidViewModel(application) {
-    var billingClient: BillingClientWrapper = BillingClientWrapper(application)
+    private var billingClient: BillingClientWrapper = BillingClientWrapper(application)
     private var repo: SubscriptionDataRepository =
         SubscriptionDataRepository(billingClientWrapper = billingClient)
     private val _billingConnectionState = MutableLiveData(false)
@@ -162,7 +163,7 @@ class MainViewModel(application: Application) :
         var leastPricedOffer: ProductDetails.SubscriptionOfferDetails
         var lowestPrice = Int.MAX_VALUE
 
-        if (!offerDetails.isNullOrEmpty()) {
+        if (offerDetails.isNotEmpty()) {
             for (offer in offerDetails) {
                 for (price in offer.pricingPhases.pricingPhaseList) {
                     if (price.priceAmountMicros < lowestPrice) {
@@ -199,10 +200,10 @@ class MainViewModel(application: Application) :
                     .build()
             )
         ).setSubscriptionUpdateParams(
-            BillingFlowParams.SubscriptionUpdateParams.newBuilder()
+            SubscriptionUpdateParams.newBuilder()
                 .setOldPurchaseToken(oldToken)
-                .setReplaceProrationMode(
-                    BillingFlowParams.ProrationMode.IMMEDIATE_AND_CHARGE_FULL_PRICE
+                .setSubscriptionReplacementMode(
+                    SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE
                 )
                 .build()
         ).build()
@@ -236,7 +237,6 @@ class MainViewModel(application: Application) :
      *
      * @param productDetails ProductDetails object returned by the library.
      * @param currentPurchases List of current [Purchase] objects needed for upgrades or downgrades.
-     * @param billingClient Instance of [BillingClientWrapper].
      * @param activity [Activity] instance.
      * @param tag String representing tags associated with offers and base plans.
      */
@@ -296,7 +296,7 @@ class MainViewModel(application: Application) :
                     billingParams.build()
                 )
             }
-        } else if (!currentPurchases.isNullOrEmpty() &&
+        } else if (currentPurchases.isNotEmpty() &&
             currentPurchases.size > MAX_CURRENT_PURCHASES_ALLOWED
         ) {
             // The developer has allowed users  to have more than 1 purchase, so they need to

@@ -25,6 +25,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.ProductDetailsResponseListener
 import com.android.billingclient.api.Purchase
@@ -62,7 +63,7 @@ class BillingClientWrapper(
     // Initialize the BillingClient.
     private val billingClient = BillingClient.newBuilder(context)
         .setListener(this)
-        .enablePendingPurchases()
+        .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
         .build()
 
     // Establish a connection to Google Play.
@@ -99,7 +100,7 @@ class BillingClientWrapper(
             QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
         ) { billingResult, purchaseList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                if (!purchaseList.isNullOrEmpty()) {
+                if (purchaseList.isNotEmpty()) {
                     _purchases.value = purchaseList
                 } else {
                     _purchases.value = emptyList()
@@ -142,7 +143,7 @@ class BillingClientWrapper(
         when (responseCode) {
             BillingClient.BillingResponseCode.OK -> {
                 var newMap = emptyMap<String, ProductDetails>()
-                if (productDetailsList.isNullOrEmpty()) {
+                if (productDetailsList.isEmpty()) {
                     Log.e(
                         TAG,
                         "onProductDetailsResponse: " +
@@ -157,6 +158,7 @@ class BillingClientWrapper(
                 }
                 _productWithProductDetails.value = newMap
             }
+
             else -> {
                 Log.i(TAG, "onProductDetailsResponse: $responseCode $debugMessage")
             }
