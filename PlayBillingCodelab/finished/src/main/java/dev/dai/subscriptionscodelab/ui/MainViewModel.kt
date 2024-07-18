@@ -161,13 +161,13 @@ class MainViewModel(application: Application) :
     ): String {
         var offerToken = String()
         var leastPricedOffer: ProductDetails.SubscriptionOfferDetails
-        var lowestPrice = Int.MAX_VALUE
+        var lowestPrice = Long.MAX_VALUE
 
         if (offerDetails.isNotEmpty()) {
             for (offer in offerDetails) {
                 for (price in offer.pricingPhases.pricingPhaseList) {
                     if (price.priceAmountMicros < lowestPrice) {
-                        lowestPrice = price.priceAmountMicros.toInt()
+                        lowestPrice = price.priceAmountMicros
                         leastPricedOffer = offer
                         offerToken = leastPricedOffer.offerToken
                     }
